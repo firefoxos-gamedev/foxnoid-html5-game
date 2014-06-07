@@ -1,0 +1,23 @@
+{
+    "version": "0.1",
+    "name": "Phaser Game Stub",
+    "description": "A game app template",
+    "launch_path": "/index.html",
+    "icons": {
+        "16": "/img/icons/mortar-16.png",
+        "48": "/img/icons/mortar-48.png",
+        "128": "/img/icons/mortar-128.png"
+    },
+    "developer": {
+        "name": "Your Name",
+        "url": "http://example.com"
+    },
+    "installs_allowed_from": ["*"],
+    "locales": {
+        "es": {
+            "name": "Plantilla de juego",
+            "description": "Plantilla para apps de juegos"
+        }
+    },
+    "default_locale": "en"
+}
