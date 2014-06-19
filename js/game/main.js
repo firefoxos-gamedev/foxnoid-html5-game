@@ -10,10 +10,10 @@ document.addEventListener("DOMContentLoaded", function(event)  {
     var game = new Phaser.Game(width, height, Phaser.AUTO, "game");
 
     //	Add the States the game has.
-    game.state.add('Preloader', BasicGame.Preloader);   // <-- Loads the assets
-    game.state.add('Game', BasicGame.Game);             // <-- Game loop.
+    game.state.add('Preloader', GameStates.Preloader);   // <-- Loads the assets
+    game.state.add('Game', GameStates.Game);             // <-- Game loop.
 
-    //	Now start the Boot state.
+    //	Now start the Preloader state.
     game.state.start('Preloader');
 
 });

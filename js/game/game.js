@@ -1,4 +1,4 @@
-BasicGame.Game = function(game) {};
+GameStates.Game = function(game) {};
 
 /**
  * This is the Game game state. Its our game loop responsible for the game itself.
@@ -10,7 +10,7 @@ BasicGame.Game = function(game) {};
  * Refer to: http://docs.phaser.io/Phaser.State.html
  */
 
-BasicGame.Game.prototype = {
+GameStates.Game.prototype = {
     create: function() {
 
         // Some constants
@@ -37,7 +37,7 @@ BasicGame.Game.prototype = {
         this.ball.enableBody = true;
         this.ball.body.bounce.setTo(1, 1);
         this.ball.body.velocity.x = this.ballSpeed;
-        this.ball.body.velocity.y = this.ballSpeed; // <-- ball speed.
+        this.ball.body.velocity.y = this.ballSpeed;
         this.ball.body.collideWorldBounds = true;
 
 
@@ -71,10 +71,8 @@ BasicGame.Game.prototype = {
         /*
          Movement of the player using touch.
 
-         in this case we're just moving him
+         in this case we're just moving the player
          on one axis.
-
-         The keyboard example shows two axis movement.
 
          To learn more about handling input refer to:
          http://docs.phaser.io/Phaser.Input.html
@@ -91,10 +89,15 @@ BasicGame.Game.prototype = {
         }
 
         /*
-        Moving the player using the keyboard keys.
+        Moving the player left and right with the arrow keys.
 
         The move here is continuous because we apply
-        a velocity to the axis.
+        a velocity to the axis. Meaning that the player never stops
+        moving, the paddle is always moving left or right.
+
+        This cursor variable is an instance of the Keyboard Manager.
+        To learn more about the keyboard refer to:
+        http://docs.phaser.io/Phaser.Keyboard.html
         */
 
         if (this.cursors.right.isDown) {
@@ -107,12 +110,25 @@ BasicGame.Game.prototype = {
 
         /*
         Collision checking
+
+        Phaser has three different types of physics systems depending on your needs.
+
+        On this game we're using the "Arcade Physics" system which is the simplest one. This system
+        gives us all we need for our arcade game without being hard on performance so it is a good
+        match for mobile devices with low specs.
+
+        To learn more about the Arcade Physics refer to:
+        http://docs.phaser.io/Phaser.Physics.Arcade.html
+
          */
 
-        // Tell physics system to collide the ball and the blocks
+        // Tell physics system to collide the ball and the blocks, if they collide we call the method
+        // ballCollidesWithBlock as a callback.
         this.game.physics.arcade.collide(this.ball, this.blocks, this.ballCollidesWithBlock);
 
-        // Tell physics system to collide the ball and the player...
+        // Tell physics system to collide the ball and the player... this check has no callback because we don't
+        // need to run any routine when the ball hits the player, we just want it to bounce and thats handled
+        // automatically by the physics system.
         this.game.physics.arcade.collide(this.ball, this.player);
 
 

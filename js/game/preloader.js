@@ -1,15 +1,15 @@
-var BasicGame = {}; // <-- Object to hold all our game states.
+var GameStates = {}; // <-- Object to hold all our game states.
 
 /**
  * This is the Preloader game state. It is the first to run. It loads all the assets used by the game.
  */
 
-BasicGame.Preloader = function (game) {
+GameStates.Preloader = function (game) {
     // placeholder, you can set some game state options in here if needed.
     // Refer to: http://docs.phaser.io/Phaser.State.html
 };
 
-BasicGame.Preloader.prototype = {
+GameStates.Preloader.prototype = {
 
     /*
     Game states have many functions that will be called at different stages of its lifecycle.
