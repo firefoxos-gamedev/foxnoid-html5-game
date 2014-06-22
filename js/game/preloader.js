@@ -1,4 +1,3 @@
-var GameStates = {}; // <-- Object to hold all our game states.
 
 /**
  * This is the Preloader game state. It is the first to run. It loads all the assets used by the game.
@@ -26,6 +25,9 @@ GameStates.Preloader.prototype = {
 
     preload: function() {
         this.load.image('background', 'assets/background.jpg');
+        this.load.image('gameover', 'assets/gameover.png');
+        this.load.image('gamewin', 'assets/gamewin.png');
+        this.load.image('taptoplay', 'assets/taptoplay.png');
         this.load.image('player', 'assets/player.png');
         this.load.image('ball', 'assets/ball.png');
         this.load.image('block', 'assets/block.png');

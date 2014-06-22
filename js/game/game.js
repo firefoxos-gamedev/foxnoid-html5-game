@@ -11,6 +11,13 @@ GameStates.Game = function(game) {};
  */
 
 GameStates.Game.prototype = {
+    resetBall: function() {
+        this.ball.reset(160, 240);
+        this.ball.body.velocity.x = this.ballSpeed;
+        this.ball.body.velocity.y = this.ballSpeed;
+    },
+
+
     create: function() {
 
         // Some constants
@@ -18,6 +25,7 @@ GameStates.Game.prototype = {
         this.ballSpeed = 220;
         this.blocksPerRow = 4;
         this.blockRows = 2;
+        this.playerLives = 13;
 
         // Add the background
         this.add.sprite(0, 0, 'background');
@@ -29,6 +37,14 @@ GameStates.Game.prototype = {
         this.player.enableBody = true;
         this.player.body.immovable = true;
         this.player.body.collideWorldBounds = true;
+
+
+        // Add the display of player lives
+        this.livesDisplay = this.add.text(10, 8, "Lives: " + this.playerLives, {
+            fill: "white",
+            fontSize: 12
+        });
+
 
         // Add ball
         this.ball = this.add.sprite(160, 240, 'ball');
@@ -57,8 +73,10 @@ GameStates.Game.prototype = {
             }
         }
 
+
         // Add cursor input.
-        this.cursors = this.input.keyboard.createCursorKeys()
+        // This call creates and returns an object containing 4 hotkeys for Up, Down, Left and Right.
+        this.cursors = this.input.keyboard.createCursorKeys();
     },
 
     update: function() {
@@ -132,11 +150,50 @@ GameStates.Game.prototype = {
         this.game.physics.arcade.collide(this.ball, this.player);
 
 
+
+
+        /*
+        Now lets do some game management. We need to figure out if the player won or lost the game.
+        If he did then we need to switch to the appropriate game state.
+         */
+
+        // Checking for game win scenario
+        // Player wins the game once all blocks are gone.
+
+        if (this.blocks.countLiving() === 0) {
+            this.state.start("GameWin");
+        }
+
+        // Checking for game over scenario
+        // If player has no more lives then its over
+
+        this.ballCollidesWithGround();
+
+
     },
 
     ballCollidesWithBlock: function(sprite, block) {
         console.log("Collided with block!");
         block.kill();
+    },
+
+    ballCollidesWithGround: function() {
+        if (this.ball.y >= 470) {
+            this.playerLives -= 1;
+            console.log(this.ball.y);
+            this.resetBall();
+        }
+
+        /*
+         Update lives display
+         */
+
+        this.livesDisplay.setText("Lives: " + this.playerLives);
+
+        if (this.playerLives === 0) {
+            this.state.start("GameOver");
+        }
+
     }
 
 };
