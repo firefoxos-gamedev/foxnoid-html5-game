@@ -1,5 +1,3 @@
-GameStates.Game = function(game) {};
-
 /**
  * This is the Game game state. Its our game loop responsible for the game itself.
  *
@@ -10,7 +8,7 @@ GameStates.Game = function(game) {};
  * Refer to: http://docs.phaser.io/Phaser.State.html
  */
 
-GameStates.Game.prototype = {
+GameStates.Game = {
     resetBall: function() {
         this.ball.reset(160, 240);
         this.ball.body.velocity.x = this.ballSpeed;

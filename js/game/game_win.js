@@ -1,5 +1,3 @@
-GameStates.GameWin = function(game) {};
-
 /**
  * This is the Game Win state. The game switch to this state once the player win the game.
  *
@@ -9,7 +7,7 @@ GameStates.GameWin = function(game) {};
  * Refer to: http://docs.phaser.io/Phaser.State.html
  */
 
-GameStates.GameWin.prototype = {
+GameStates.GameWin = {
     handleEvent: function(event) {
         if (event.type === "keypress") {
             document.removeEventListener("keypress", this, false);

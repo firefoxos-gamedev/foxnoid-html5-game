@@ -1,5 +1,3 @@
-GameStates.GameOver = function(game) {};
-
 /**
  * This is the Game Over state. The game switch to this state once the player loses the game.
  *
@@ -9,7 +7,7 @@ GameStates.GameOver = function(game) {};
  * Refer to: http://docs.phaser.io/Phaser.State.html
  */
 
-GameStates.GameOver.prototype = {
+GameStates.GameOver = {
     handleEvent: function(event) {
         if (event.type === "keypress") {
             document.removeEventListener("keypress", this, false);
