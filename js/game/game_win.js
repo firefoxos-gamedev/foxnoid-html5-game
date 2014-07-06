@@ -45,7 +45,7 @@ GameStates.GameWin = {
          */
 
         if (this.input.pointer1.isDown) {
-            this.restartGame();            ;
+            this.state.start("Game");
         }
 
     }

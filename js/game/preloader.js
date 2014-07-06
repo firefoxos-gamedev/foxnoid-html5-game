@@ -29,13 +29,18 @@ GameStates.Preloader = {
         this.load.image('block', 'assets/block.png');
 
     },
-    update: function() {
-        /*
-        When we reach the update() function all the assets are loaded so we can simply switch
-        to the 'Game' state and start playing.
-         */
+    create: function(){
+        this.input.maxPointers = 1;
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        if(!this.game.device.desktop && !this.isFirefoxOS) {
+            this.scale.forceOrientation(true, false, 'screenRotate');
+        }
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
+        this.scale.setScreenSize(true);
         this.state.start('Game');
+    },
+    isFirefoxOS: function(){
+        return (!!"mozApps" in navigator && navigator.userAgent.search("Mobile")) != -1;
     }
-
-
 };
