@@ -25,13 +25,4 @@ document.addEventListener("DOMContentLoaded", function()  {
 
     var game = new Phaser.Game(width, height, Phaser.CANVAS, "game");
 
-    //	Add the States the game has.
-    game.state.add('Preloader', GameStates.Preloader);   // <-- Loads the assets.
-    game.state.add('Game', GameStates.Game);             // <-- Game loop (a.k.a the actual game).
-    game.state.add('GameOver', GameStates.GameOver);     // <-- Game Over state.
-    game.state.add('GameWin', GameStates.GameWin);       // <-- Game Win state.
-
-    //	Now start the Preloader state.
-    game.state.start('Preloader');
-
 });
