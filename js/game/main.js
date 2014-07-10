@@ -9,15 +9,9 @@
  *
  */
 
-console.log("loading main.js");
-
 var GameStates = {}; // <-- Object to hold all our game states.
 
-
 document.addEventListener("DOMContentLoaded", function()  {
-
-    console.log("DOM is ready, loading phaser");
-
 
     // Create your Phaser game and inject it into the game div.
     // For more information regarding the Phaser Game object refer to:
@@ -30,8 +24,6 @@ document.addEventListener("DOMContentLoaded", function()  {
     var height = 480;
 
     var game = new Phaser.Game(width, height, Phaser.CANVAS, "game");
-
-    console.log(game);
 
     //	Add the States the game has.
     game.state.add('Preloader', GameStates.Preloader);   // <-- Loads the assets.
