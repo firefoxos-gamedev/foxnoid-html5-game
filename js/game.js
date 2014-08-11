@@ -15,19 +15,24 @@ GameStates.Game = {
         this.ball.body.velocity.y = this.ballSpeed;
     },
 
-
-    create: function() {
-
+    initWorld: function() {
         // Some constants
         this.playerSpeed = 250;
         this.ballSpeed = 220;
-        this.blocksPerRow = 4;
-        this.blockRows = 2;
+        this.blocksPerRow = 5;
+        this.blockRows = 4;
         this.playerLives = 13;
 
         // Add the background
         this.add.sprite(0, 0, 'background');
 
+        // Add keyboard input.
+        // This call creates and returns an object containing 4 hotkeys for Up, Down, Left and Right.
+        this.cursors = this.input.keyboard.createCursorKeys();
+    },
+
+
+    addPlayer: function () {
         // Add the player
         this.player = this.add.sprite(160, 440, 'player');
         this.physics.arcade.enable(this.player);
@@ -42,8 +47,9 @@ GameStates.Game = {
             fill: "white",
             fontSize: 12
         });
+    },
 
-
+    addBall: function () {
         // Add ball
         this.ball = this.add.sprite(160, 240, 'ball');
         this.physics.arcade.enable(this.ball);
@@ -53,15 +59,16 @@ GameStates.Game = {
         this.ball.body.velocity.x = this.ballSpeed;
         this.ball.body.velocity.y = this.ballSpeed;
         this.ball.body.collideWorldBounds = true;
+    },
 
-
+    addBlocks: function () {
         // Blocks
         this.blocks = this.game.add.group();
-        for (var line = 0; line <= this.blockRows; line++) {
-            for (var row = 0; row <= this.blocksPerRow; row++) {
+        for (var line = 0; line <= this.blockRows - 1; line++) {
+            for (var row = 0; row <= this.blocksPerRow - 1; row++) {
                 var posY = (line * 30) + 40;
                 var posX = (row * 50) + 40;
-                console.log("Adding block at: " + posX + "," + posY)
+                console.log("Adding block at: " + posX + "," + posY);
                 var temp = this.add.sprite(posX, posY, 'block');
                 this.physics.arcade.enable(temp);
                 temp.enableBody = true;
@@ -70,20 +77,30 @@ GameStates.Game = {
                 this.blocks.add(temp);
             }
         }
-
-
-        // Add cursor input.
-        // This call creates and returns an object containing 4 hotkeys for Up, Down, Left and Right.
-        this.cursors = this.input.keyboard.createCursorKeys();
     },
 
-    update: function() {
-        /*
-        This function is called in a loop using requestAnimationFrame(). It is our game loop, our heartbeat. Every time
-        it is called we process the user input and update the display.
-         */
+    create: function() {
 
+        this.initWorld();
+        this.addPlayer();
+        this.addBall();
+        this.addBlocks();
+    },
 
+    checkHitWithBlocks: function () {
+        // Tell physics system to collide the ball and the blocks, if they collide we call the method
+        // ballCollidesWithBlock as a callback.
+        this.game.physics.arcade.collide(this.ball, this.blocks, this.ballCollidesWithBlock);
+    },
+
+    checkHitWithPlayer: function () {
+        // Tell physics system to collide the ball and the player... this check has no callback because we don't
+        // need to run any routine when the ball hits the player, we just want it to bounce and thats handled
+        // automatically by the physics system.
+        this.game.physics.arcade.collide(this.ball, this.player);
+    },
+
+    handleTouchInput: function () {
         /*
          Movement of the player using touch.
 
@@ -103,17 +120,19 @@ GameStates.Game = {
                 this.player.body.velocity.x = -1 * this.playerSpeed;
             }
         }
+    },
 
+    handleKeyboardInput: function () {
         /*
-        Moving the player left and right with the arrow keys.
+          Moving the player left and right with the arrow keys.
 
-        The move here is continuous because we apply
-        a velocity to the axis. Meaning that the player never stops
-        moving, the paddle is always moving left or right.
+          The move here is continuous because we apply
+          a velocity to the axis. Meaning that the player never stops
+          moving, the paddle is always moving left or right.
 
-        This cursor variable is an instance of the Keyboard Manager.
-        To learn more about the keyboard refer to:
-        http://docs.phaser.io/Phaser.Keyboard.html
+          This cursor variable is an instance of the Keyboard Manager.
+          To learn more about the keyboard refer to:
+          http://docs.phaser.io/Phaser.Keyboard.html
         */
 
         if (this.cursors.right.isDown) {
@@ -123,7 +142,21 @@ GameStates.Game = {
         if (this.cursors.left.isDown) {
             this.player.body.velocity.x = -1 * this.playerSpeed;
         }
+    },
 
+    checkGameWin: function () {
+        if (this.blocks.countLiving() === 0) {
+            this.state.start("GameWin");
+        }
+    },
+
+    update: function() {
+        /*
+        This function is called in a loop using requestAnimationFrame(). It is our game loop, our heartbeat. Every time
+        it is called we process the user input and update the display.
+         */
+        this.handleTouchInput();
+        this.handleKeyboardInput();
         /*
         Collision checking
 
@@ -137,19 +170,8 @@ GameStates.Game = {
         http://docs.phaser.io/Phaser.Physics.Arcade.html
 
          */
-
-        // Tell physics system to collide the ball and the blocks, if they collide we call the method
-        // ballCollidesWithBlock as a callback.
-        this.game.physics.arcade.collide(this.ball, this.blocks, this.ballCollidesWithBlock);
-
-        // Tell physics system to collide the ball and the player... this check has no callback because we don't
-        // need to run any routine when the ball hits the player, we just want it to bounce and thats handled
-        // automatically by the physics system.
-        this.game.physics.arcade.collide(this.ball, this.player);
-
-
-
-
+        this.checkHitWithBlocks();
+        this.checkHitWithPlayer();
         /*
         Now lets do some game management. We need to figure out if the player won or lost the game.
         If he did then we need to switch to the appropriate game state.
@@ -157,11 +179,7 @@ GameStates.Game = {
 
         // Checking for game win scenario
         // Player wins the game once all blocks are gone.
-
-        if (this.blocks.countLiving() === 0) {
-            this.state.start("GameWin");
-        }
-
+        this.checkGameWin();
         // Checking for game over scenario
         // If player has no more lives then its over
 
@@ -178,7 +196,6 @@ GameStates.Game = {
     ballCollidesWithGround: function() {
         if (this.ball.y >= 470) {
             this.playerLives -= 1;
-            console.log(this.ball.y);
             this.resetBall();
         }
 
