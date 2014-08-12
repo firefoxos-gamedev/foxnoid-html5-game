@@ -22,6 +22,7 @@ GameStates.Game = {
         this.blocksPerRow = 5;
         this.blockRows = 4;
         this.playerLives = 13;
+        this.currentLevel = 0;
 
         // Add the background
         this.add.sprite(0, 0, 'background');
@@ -62,19 +63,30 @@ GameStates.Game = {
     },
 
     addBlocks: function () {
-        // Blocks
-        this.blocks = this.game.add.group();
+        var level = levels[this.currentLevel];
+        var blockNum = 0;
+
+        // do not create the blocks group
+        // if it is already present.
+        if (!this.blocks) {
+            this.blocks = this.game.add.group();
+        }
+
         for (var line = 0; line <= this.blockRows - 1; line++) {
             for (var row = 0; row <= this.blocksPerRow - 1; row++) {
                 var posY = (line * 30) + 40;
                 var posX = (row * 50) + 40;
-                console.log("Adding block at: " + posX + "," + posY);
-                var temp = this.add.sprite(posX, posY, 'block');
-                this.physics.arcade.enable(temp);
-                temp.enableBody = true;
-                temp.body.immovable = true;
 
-                this.blocks.add(temp);
+                if (level[blockNum] === 1) {
+                    var temp = this.add.sprite(posX, posY, 'block');
+                    this.physics.arcade.enable(temp);
+                    temp.enableBody = true;
+                    temp.body.immovable = true;
+
+                    this.blocks.add(temp);
+                }
+
+                blockNum += 1;
             }
         }
     },
@@ -146,7 +158,13 @@ GameStates.Game = {
 
     checkGameWin: function () {
         if (this.blocks.countLiving() === 0) {
-            this.state.start("GameWin");
+            if (this.currentLevel === levels.length - 1) {
+                this.state.start("GameWin");
+            } else {
+                this.currentLevel++;
+                this.addBlocks();
+                this.resetBall();
+            }
         }
     },
 
